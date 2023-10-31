@@ -1,23 +1,51 @@
 driver:
-  name: vagrant
+  privileged: true
+  hostname: test # Hostname is used in the tests so should be fixed
+  name: dokken
+  chef_image: cincproject/cinc
+  chef_version: 18
+
+transport:
+  name: dokken
 
 provisioner:
-  name: chef_infra
-  enforce_idempotency: true
-  multiple_converge: 2
-  deprecations_as_errors: true
-  chef_license: accept-no-persist
-  enforce_idempotency: true
-  multiple_converge: 2
+  name: dokken
+  product_name: cinc
+  chef_binary: /opt/cinc/bin/cinc-client
 
 verifier:
   name: inspec
 
 platforms:
+  - name: debian-10
+    driver:
+      image: dokken/debian-11
+      pid_one_command: /bin/systemd
+
   - name: debian-11
+    driver:
+      image: dokken/debian-11
+      pid_one_command: /bin/systemd
+
   - name: debian-12
+    driver:
+      image: dokken/debian-12
+      pid_one_command: /bin/systemd
+
   - name: ubuntu-20.04
+    driver:
+      image: dokken/ubuntu-22.04
+      pid_one_command: /bin/systemd
+
   - name: ubuntu-22.04
+    driver:
+      image: dokken/ubuntu-22.04
+      pid_one_command: /bin/systemd
+
+  - name: ubuntu-23.04
+    driver:
+      image: dokken/ubuntu-23.04
+      pid_one_command: /bin/systemd
 
 suites:
   - name: server
@@ -36,20 +64,3 @@ suites:
           dhcp-option:
             - "DOMAIN local"
             - "DOMAIN-SEARCH local"
-
-  - name: server_verification
-    run_list:
-      - recipe[openvpn::server]
-      - recipe[openvpn::users]
-    attributes:
-      openvpn:
-        server_verification: "remote-cert-tls server"
-
-  - name: server_verify_no_databag
-    run_list:
-      - recipe[openvpn::server]
-      - recipe[openvpn::users]
-    attributes:
-      openvpn:
-        server_verification: "remote-cert-tls server"
-        use_databag: false

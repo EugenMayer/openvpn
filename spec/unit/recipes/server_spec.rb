@@ -35,35 +35,5 @@ describe 'openvpn::server' do
       expect(chef_run).to render_file('/etc/openvpn/server.conf')
         .with_content('push "route 10.12.10.0 255.255.255.0"')
     end
-
-    it 'executes gencrl with correction parameters' do
-      expect(chef_run).to run_execute('gencrl').with(
-        environment: {
-          'KEY_CITY' => 'San Francisco',
-          'KEY_CN' => 'Fort Funston CA',
-          'KEY_COUNTRY' => 'US',
-          'KEY_DIR' => '/etc/openvpn/keys',
-          'KEY_EMAIL' => 'admin@foobar.com',
-          'KEY_ORG' => 'Fort Funston',
-          'KEY_OU' => 'OpenVPN Server',
-          'KEY_PROVINCE' => 'CA',
-          'KEY_SIZE' => '2048',
-        },
-        command: 'umask 077 && openssl ca -config /etc/openvpn/easy-rsa/openssl.cnf ' \
-                 '-gencrl ' \
-                 '-crlexts crl_ext ' \
-                 '-md sha256 ' \
-                 '-keyfile /etc/openvpn/keys/ca.key ' \
-                 '-cert /etc/openvpn/keys/ca.crt ' \
-                 '-out /etc/openvpn/keys/crl.pem'
-      )
-    end
-
-    it 'creates a world readable CRL file' do
-      expect(chef_run).to create_remote_file('/etc/openvpn/crl.pem').with(
-        mode: '644',
-        source: 'file:///etc/openvpn/keys/crl.pem'
-      )
-    end
   end
 end

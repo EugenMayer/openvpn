@@ -34,8 +34,47 @@ describe file("#{conf_location}") do
   its('content') { should include 'push "route 10.12.10.0 255.255.255.0"' }
 end
 
-describe command('openssl crl -in /etc/openvpn/keys/crl.pem -noout -issuer') do
+describe command('openssl crl -in /etc/openvpn/easy-rsa/pki/crl.pem -noout -issuer') do
   its('stdout') do
-    should match(/O.*=.*Fort Funston.*OU.*=.*OpenVPN Server.*emailAddress.*=.*admin@foobar.com/)
+    should match(/.*emailAddress.*=.*admin@foobar.com/)
+    should match(/.*O.*=.*Fort Funston.*/)
+    should match(/.*OU.*=.*Fort Funston.*/)
+    should match(/.*CN.*=.*Our IT.*/)
   end
+end
+
+describe file('/etc/openvpn/easy-rsa/easyrsa') do
+  it { should be_file }
+end
+
+describe file('/etc/openvpn/easy-rsa/pki/vars') do
+  it { should be_file }
+end
+
+describe file('/etc/openvpn/easy-rsa/pki/dh.pem') do
+  it { should be_file }
+end
+
+describe file('/etc/openvpn/easy-rsa/pki/crl.pem') do
+  it { should be_file }
+end
+
+describe file('/etc/openvpn/easy-rsa/pki/ca.crt') do
+  it { should be_file }
+end
+
+describe file('/etc/openvpn/easy-rsa/pki/private/ca.key') do
+  it { should be_file }
+end
+
+describe file('/etc/openvpn/easy-rsa/pki/reqs/server.req') do
+  it { should be_file }
+end
+
+describe file('/etc/openvpn/easy-rsa/pki/issued/server.crt') do
+  it { should be_file }
+end
+
+describe file('/etc/openvpn/easy-rsa/pki/private/server.key') do
+  it { should be_file }
 end

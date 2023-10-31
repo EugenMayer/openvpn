@@ -37,25 +37,6 @@ if [ -z "$EASYRSA_CALLER" ]; then
   return 1
 fi
 
-# This variable should point to
-# the top level of the easy-rsa
-# tree.
-set_var EASYRSA "`pwd`"
-
-#
-# This variable should point to
-# the requested executables
-#
-set_var EASYRSA_OPENSSL       "openssl"
-set_var EASYRSA_PKCS11TOOL    "pkcs11-tool"
-set_var EASYRSA_GREP          "grep"
-
-
-# This variable should point to
-# the openssl.cnf file included
-# with easy-rsa.
-set_var EASYRSA_SSL_CONF      "${EASY_RSA}/openssl-easyrsa.cnf"
-
 # Edit this variable to point to
 # your soon-to-be-created key
 # directory.
@@ -64,11 +45,7 @@ set_var EASYRSA_SSL_CONF      "${EASY_RSA}/openssl-easyrsa.cnf"
 # a rm -rf on this directory
 # so make sure you define
 # it correctly!
-set_var EASYRSA_PKI           "<%= node['openvpn']['key_dir'] %>"
-
-# PKCS11 fixes
-set_var EASYRSA_PKCS11_MODULE_PATH "dummy"
-set_var EASYRSA_PKCS11_PIN    "dummy"
+set_var EASYRSA_PKI           "<%= node['openvpn']['easyrsa']['key_dir'] %>"
 
 # Increase this to 2048 if you
 # are paranoid.  This will slow
@@ -84,6 +61,9 @@ set_var EASYRSA_CA_EXPIRE     <%= node['openvpn']['key']['ca_expire'] %>
 set_var EASYRSA_CERT_EXPIRE   <%= node['openvpn']['key']['expire'] %>
 set_var EASYRSA_CRL_DAYS      <%= node['openvpn']['key']['crl_expire'] %>
 
+# ensures our REQ arguments are also used for the CA
+set_var EASYRSA_DN	          "org"
+
 # These are the default values for fields
 # which will be placed in the certificate.
 # Don't leave any of these fields blank.
@@ -91,4 +71,13 @@ set_var EASYRSA_REQ_COUNTRY   "<%= node['openvpn']['key']['country'] %>"
 set_var EASYRSA_REQ_PROVINCE  "<%= node['openvpn']['key']['province'] %>"
 set_var EASYRSA_REQ_CITY      "<%= node['openvpn']['key']['city'] %>"
 set_var EASYRSA_REQ_ORG       "<%= node['openvpn']['key']['org'] %>"
+set_var EASYRSA_REQ_OU		    "<%= node['openvpn']['key']['org'] %>"
 set_var EASYRSA_REQ_EMAIL     "<%= node['openvpn']['key']['email'] %>"
+
+# non interactive setup mostly. We might make this configureable
+set_var EASYRSA_NO_PASS	      1
+
+# most commands should run non-interactive
+set_var EASYRSA_BATCH		      1
+
+

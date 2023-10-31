@@ -5,7 +5,7 @@ license           'Apache-2.0'
 description       'Installs and configures openvpn and includes rake tasks for managing certs.'
 source_url        'https://github.com/eugenmayer/openvpn'
 issues_url        'https://github.com/eugenmayer/openvpn/issues'
-version           '8.0.9'
+version           '8.0.0'
 chef_version      '>= 15.3'
 
 supports 'debian'

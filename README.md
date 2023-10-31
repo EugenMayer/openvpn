@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Installs OpenVPN and sets up a fairly basic configuration. Since OpenVPN is very complex, we provide a baseline only (see **Customizing Server Configuration** below).
+Sets up a ca, server, crl using easy-rsa and stays easy-rsa compliant (see below)
 
 ## Requirements
 
@@ -13,18 +14,19 @@ Installs OpenVPN and sets up a fairly basic configuration. Since OpenVPN is very
 - Debian 11+
 - Ubuntu 22.04+
 
-### Not Supported
+## Easy-rsa
 
-This cookbook is designed to set up a basic installation of OpenVPN that will work for many common use cases. The following configurations are not supported by default with this cookbook:
+You can use easy-rsa after the deployment to run any renewals or easy-rsa specific commands in
 
-- setting up routers and other network devices
-- ethernet-bridging (tap interfaces)
-- dual-factor authentication
-- many other advanced OpenVPN configurations
+```bash
+cd /etc/openvpn/easy-rsa
+./easy-rsa show-ca
+./easy-rsa gen-crl
 
-For further modification of the cookbook see **Usage** below.
-
-For more information about OpenVPN, see the [official site](http://openvpn.net/).
+# create a client certificate
+./easy-rsa gen-req client1
+./easy-rsa sign-req client client1
+```
 
 ## Attributes
 
@@ -39,11 +41,6 @@ These attributes are set by the cookbook by default.
 - `node['openvpn']['push_options']` - Array of options to push to clients in the server.conf, e.g. [["dhcp-option DNS", ["8.8.8.8"]]]. Default is empty.
 - `node['openvpn']['configure_default_server']` - Boolean. Set this to false if you want to create all of your "conf" files with the LWRP.
 - `node['openvpn']['git_package']` - Boolean. Whether to use the `openvpn-git` package (Arch Linux only, default false).
-- `node['openvpn']['client_prefix']` - String. Name of the config that is created for clients. When imported into most vpn clients, this is the name that will be displayed for the connection. Default is 'vpn-prod'.
-- `node['openvpn']['cookbook_user_conf']` - String. The cookbook used by the `openvpn::users` recipe for the `client.conf.erb` template. You can override this to your own, such as your wrapper cookbook. Default is `'openvpn'`.
-- `node['openvpn']['key_dir']` - Location to store keys, certificates and related files. Default `/etc/openvpn/keys`.
-- `node['openvpn']['signing_ca_cert']` - CA certificate for signing, default `/etc/openvpn/keys/ca.crt`
-- `node['openvpn']['signing_ca_key']` - CA key for signing, default `/etc/openvpn/keys/ca.key`
 - `node['openvpn']['server_verification']` - Server certificate verification directive, can be anything mentioned [in official doc](https://openvpn.net/index.php/open-source/documentation/howto.html#mitm). By default `nil`.
 - `node['openvpn']['config']['local']` - IP to listen on, defaults to `node['ipaddress']`
 - `node['openvpn']['config']['proto']` - Valid values are 'udp' or 'tcp', defaults to 'udp'.

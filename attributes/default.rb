@@ -17,15 +17,6 @@
 # limitations under the License.
 #
 
-# FreeBSD typically uses the 'wheel' group, no 'root' group exists;
-# the service from the package uses /usr/local prefix
-
-default['openvpn']['fs_prefix'] = if platform?('freebsd')
-                                    '/usr/local'
-                                  else
-                                    ''
-                                  end
-
 # Set this to false if you want to just use the lwrp
 default['openvpn']['configure_default_server'] = true
 
@@ -41,18 +32,20 @@ default['openvpn']['key']['country']        = 'US'
 default['openvpn']['key']['province']       = 'CA'
 default['openvpn']['key']['city']           = 'San Francisco'
 default['openvpn']['key']['org']            = 'Fort Funston'
+default['openvpn']['key']['ca_common_name'] = 'Our IT'
 default['openvpn']['key']['email']          = 'admin@foobar.com'
 default['openvpn']['key']['message_digest'] = 'sha256'
 
-# Cookbook attributes
-default['openvpn']['client_prefix']   = 'vpn-prod'
-default['openvpn']['key_dir']         = [node['openvpn']['fs_prefix'], '/etc/openvpn/keys'].join
-default['openvpn']['signing_ca_key']  = "#{node['openvpn']['key_dir']}/ca.key"
-default['openvpn']['signing_ca_cert'] = "#{node['openvpn']['key_dir']}/ca.crt"
-default['openvpn']['use_databag']     = true
-default['openvpn']['user_query']      = '*:*'
-default['openvpn']['cookbook_user_conf'] = 'openvpn'
-default['openvpn']['user_databag']    = 'users'
+# ATTENTION: no longer supported to change ANY OF THESE!!! Keep it as is, it will be removed in the future
+# they will all match the default easy-rsa layout
+default['openvpn']['easyrsa']['key_dir']         = '/etc/openvpn/easy-rsa/pki'
+default['openvpn']['easyrsa']['signing_ca_key']  = "#{node['openvpn']['easyrsa']['key_dir']}/private/ca.key"
+default['openvpn']['easyrsa']['signing_ca_cert'] = "#{node['openvpn']['easyrsa']['key_dir']}/ca.crt"
+default['openvpn']['easyrsa']['dh'] = "#{node['openvpn']['easyrsa']['key_dir']}/dh.pem"
+default['openvpn']['easyrsa']['crl'] = "#{node['openvpn']['easyrsa']['key_dir']}/crl.pem"
+default['openvpn']['easyrsa']['server_csr'] = "#{node['openvpn']['easyrsa']['key_dir']}/reqs/server.req"
+default['openvpn']['easyrsa']['server_key'] = "#{node['openvpn']['easyrsa']['key_dir']}/private/server.key"
+default['openvpn']['easyrsa']['server_cert'] = "#{node['openvpn']['easyrsa']['key_dir']}/issued/server.crt"
 
 default['openvpn']['type']            = 'server'
 default['openvpn']['subnet']          = '10.8.0.0'
@@ -75,11 +68,7 @@ default['openvpn']['config']['user']  = 'nobody'
 
 # the default follows Linux Standard Base Core Specification (ISO/IEC 23360 Part 1:2007(E)):
 # Table 21-2 Optional User & Group Names
-default['openvpn']['config']['group'] = value_for_platform_family(rhel: 'nobody',
-                                                                  arch: 'nobody',
-                                                                  debian: 'nogroup',
-                                                                  mac_os_x: 'nogroup',
-                                                                  default: 'nobody')
+default['openvpn']['config']['group'] = 'nogroup'
 
 default['openvpn']['config']['local']           = node['ipaddress']
 default['openvpn']['config']['proto']           = 'udp'
@@ -88,15 +77,15 @@ default['openvpn']['config']['keepalive']       = '10 120'
 default['openvpn']['config']['log']             = '/var/log/openvpn.log'
 default['openvpn']['config']['push']            = nil
 default['openvpn']['config']['script-security'] = 2
-default['openvpn']['config']['up']              = [node['openvpn']['fs_prefix'], '/etc/openvpn/server.up.sh'].join
+default['openvpn']['config']['up']              = '/etc/openvpn/server.up.sh'
 default['openvpn']['config']['persist-key']     = ''
 default['openvpn']['config']['persist-tun']     = ''
 
-default['openvpn']['config']['ca']              = node['openvpn']['signing_ca_cert']
-default['openvpn']['config']['key']             = "#{node['openvpn']['key_dir']}/server.key"
-default['openvpn']['config']['cert']            = "#{node['openvpn']['key_dir']}/server.crt"
-default['openvpn']['config']['dh']              = "#{node['openvpn']['key_dir']}/dh#{node['openvpn']['key']['size']}.pem"
-default['openvpn']['config']['crl-verify']      = [node['openvpn']['fs_prefix'], '/etc/openvpn/crl.pem'].join
+default['openvpn']['config']['ca']              = node['openvpn']['easyrsa']['signing_ca_cert']
+default['openvpn']['config']['key']             = node['openvpn']['easyrsa']['server_key']
+default['openvpn']['config']['cert']            = node['openvpn']['easyrsa']['server_cert']
+default['openvpn']['config']['dh']              = node['openvpn']['easyrsa']['dh']
+default['openvpn']['config']['crl-verify']      = node['openvpn']['easyrsa']['crl']
 
 # interface configuration depending on type
 case node['openvpn']['type']

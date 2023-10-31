@@ -54,8 +54,8 @@ when 'debian'
   service_name = "openvpn@#{node['openvpn']['type']}.service"
 when 'arch'
   if node['openvpn']['git_package']
-    link "#{node['openvpn']['fs_prefix']}/etc/openvpn/#{node['openvpn']['type']}/#{node['openvpn']['type']}.conf" do
-      to "#{node['openvpn']['fs_prefix']}/etc/openvpn/#{node['openvpn']['type']}.conf"
+    link "/etc/openvpn/#{node['openvpn']['type']}/#{node['openvpn']['type']}.conf" do
+      to "/etc/openvpn/#{node['openvpn']['type']}.conf"
     end
     service_name = "openvpn-#{node['openvpn']['type']}@#{node['openvpn']['type']}.service"
   else
