@@ -53,7 +53,7 @@ end
 org = node['openvpn']['key']['ca_common_name']
 execute 'easyrsa-initca' do
   cwd "/etc/openvpn/easy-rsa/"
-  command "EASYRSA_BATCH=1 EASYRSA_REQ_CN='#{org}' ./easyrsa build-ca nopass"
+  command "EASYRSA_BATCH=1 EASYRSA_DN='org' EASYRSA_REQ_CN='#{org}' ./easyrsa build-ca nopass"
   not_if { ::File.exist?("#{ca_crt}") }
 end
 

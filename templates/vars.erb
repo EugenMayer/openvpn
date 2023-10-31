@@ -61,9 +61,6 @@ set_var EASYRSA_CA_EXPIRE     <%= node['openvpn']['key']['ca_expire'] %>
 set_var EASYRSA_CERT_EXPIRE   <%= node['openvpn']['key']['expire'] %>
 set_var EASYRSA_CRL_DAYS      <%= node['openvpn']['key']['crl_expire'] %>
 
-# ensures our REQ arguments are also used for the CA
-set_var EASYRSA_DN	          "org"
-
 # These are the default values for fields
 # which will be placed in the certificate.
 # Don't leave any of these fields blank.
