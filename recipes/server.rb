@@ -46,7 +46,7 @@ directory [node['openvpn']['fs_prefix'], '/etc/openvpn/easy-rsa'].join do
   mode  '0755'
 end
 
-%w(openssl.cnf pkitool vars Rakefile).each do |f|
+%w(openssl.cnf vars).each do |f|
   template [node['openvpn']['fs_prefix'], "/etc/openvpn/easy-rsa/#{f}"].join do
     source "#{f}.erb"
     owner 'root'
@@ -69,8 +69,8 @@ directory [node['openvpn']['fs_prefix'], '/etc/openvpn/server.up.d'].join do
   mode  '0755'
 end
 
-template "#{key_dir}/openssl.cnf" do
-  source 'openssl.cnf.erb'
+template "#{key_dir}/openssl-easyrsa.cnf" do
+  source 'openssl-easyrsa.cnf.erb'
   owner 'root'
   group node['root_group']
   mode  '0644'
@@ -190,18 +190,12 @@ execute 'gencrl' do
   notifies :create, "remote_file[#{[node['openvpn']['fs_prefix'], '/etc/openvpn/crl.pem'].join}]"
 end
 
-# Make a world readable copy of the CRL
-remote_file [node['openvpn']['fs_prefix'], '/etc/openvpn/crl.pem'].join do
-  mode   '644'
-  source "file://#{key_dir}/crl.pem"
+link '/etc/openvpn/crl.pem' do
+  to '/etc/openvpn/keys/crl.pem'
+  action :create
 end
 
-# the FreeBSD service expects openvpn.conf
-conf_name = if platform?('freebsd')
-              'openvpn'
-            else
-              'server'
-            end
+conf_name = 'server'
 
 openvpn_conf conf_name do
   notifies :restart, 'service[openvpn]'

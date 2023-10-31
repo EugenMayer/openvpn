@@ -34,10 +34,6 @@ describe file("#{conf_location}") do
   its('content') { should include 'push "route 10.12.10.0 255.255.255.0"' }
 end
 
-describe file('/etc/openvpn/easy-rsa/pkitool') do
-  its('content') { should include '-md sha256' }
-end
-
 describe command('openssl crl -in /etc/openvpn/keys/crl.pem -noout -issuer') do
   its('stdout') do
     should match(/O.*=.*Fort Funston.*OU.*=.*OpenVPN Server.*emailAddress.*=.*admin@foobar.com/)
