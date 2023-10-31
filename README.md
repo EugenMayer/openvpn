@@ -1,5 +1,6 @@
 # openvpn Cookbook
 
+[![ci](https://github.com/EugenMayer/openvpn/actions/workflows/ci.yml/badge.svg)](https://github.com/EugenMayer/openvpn/actions/workflows/ci.yml)
 [![Cookbook Version](https://img.shields.io/cookbook/v/openvpn.svg)](https://supermarket.chef.io/cookbooks/openvpn)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
