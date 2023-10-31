@@ -10,8 +10,8 @@ Installs OpenVPN and sets up a fairly basic configuration. Since OpenVPN is very
 
 ### Platforms
 
-- Debian 10+
-- Ubuntu 20.04+
+- Debian 11+
+- Ubuntu 22.04+
 
 ### Not Supported
 

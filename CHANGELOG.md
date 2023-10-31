@@ -8,5 +8,6 @@ Forked from sous
 - migrated to easy-rsa 3.0
 - support for debian 12 bookworm
 - fixed several quirks with easy-rsa
+- only support easy-rsa 3.0 distros: debian 10+ and ubuntu 20+
 - removed user management
 - removed support for freebsd, arch, macos, windows, rhel and suse
