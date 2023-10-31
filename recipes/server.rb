@@ -1,7 +1,8 @@
 #
-# Cookbook:: openvpn
+# Cookbook:: openvpn-easyrsa
 # Recipe:: server
 #
+# Copyright:: 2023, Eugen Mayer
 # Copyright:: 2009-2018, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +17,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe 'openvpn::enable_ip_forwarding'
-include_recipe 'openvpn::install_bridge_utils' if node['openvpn']['type'] == 'bridge'
-include_recipe 'openvpn::install'
-
-include_recipe 'openvpn::easy_rsa'
+include_recipe 'openvpn-easyrsa::enable_ip_forwarding'
+include_recipe 'openvpn-easyrsa::install_bridge_utils' if node['openvpn']['type'] == 'bridge'
+include_recipe 'openvpn-easyrsa::install'
+include_recipe 'openvpn-easyrsa::easy_rsa'
 
 # this recipe currently uses the bash resource, ensure it is installed
 p = package 'bash' do
@@ -68,10 +68,10 @@ end
 
 require 'openssl'
 
-openvpn_conf 'server' do
+openvpn_easyrsa_conf 'server' do
   notifies :restart, 'service[openvpn]'
   only_if { node['openvpn']['configure_default_server'] }
   action :create
 end
 
-include_recipe 'openvpn::service'
+include_recipe 'openvpn-easyrsa::service'

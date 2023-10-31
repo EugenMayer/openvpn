@@ -16,17 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if platform?('freebsd')
-  sysctl 'net.inet.ip.forwarding' do
-    value 1
-  end
-else
-  sysctl 'net.ipv4.conf.all.forwarding' do
-    value 1
-  end
 
-  sysctl 'net.ipv6.conf.all.forwarding' do
-    value 1
-    only_if { Dir.exist? '/proc/sys/net/ipv6' }
-  end
+sysctl 'net.ipv4.conf.all.forwarding' do
+  value 1
 end
+
+sysctl 'net.ipv6.conf.all.forwarding' do
+  value 1
+  only_if { Dir.exist? '/proc/sys/net/ipv6' }
+end
+

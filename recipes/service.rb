@@ -1,5 +1,5 @@
 #
-# Cookbook:: openvpn
+# Cookbook:: openvpn-easyrsa
 # Recipe:: service
 #
 # Copyright:: 2009-2019, Chef Software, Inc.
@@ -16,51 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe 'openvpn::install'
+include_recipe 'openvpn-easyrsa::install'
 
 # systemd platforms use an instance service
 case node['platform_family']
-when 'rhel'
-  case node['platform_version'].to_i
-  when 8
-    link "/etc/systemd/system/multi-user.target.wants/openvpn-#{node['openvpn']['type']}@#{node['openvpn']['type']}.service" do
-      to '/usr/lib/systemd/system/openvpn@.service'
-    end
-    service_name = "openvpn-#{node['openvpn']['type']}@#{node['openvpn']['type']}.service"
-  when 7
-    link "/etc/systemd/system/multi-user.target.wants/openvpn@#{node['openvpn']['type']}.service" do
-      to '/usr/lib/systemd/system/openvpn@.service'
-    end
-    service_name = "openvpn@#{node['openvpn']['type']}.service"
-  else
-    service_name = 'openvpn'
-  end
-when 'fedora'
-  link "/etc/systemd/system/multi-user.target.wants/openvpn-#{node['openvpn']['type']}@#{node['openvpn']['type']}.service" do
-    to '/usr/lib/systemd/system/openvpn@.service'
-  end
-  service_name = "openvpn-#{node['openvpn']['type']}@#{node['openvpn']['type']}.service"
-when 'amazon'
-  case node['platform_version'].to_i
-  when 2
-    link "/etc/systemd/system/multi-user.target.wants/openvpn@#{node['openvpn']['type']}.service" do
-      to '/usr/lib/systemd/system/openvpn@.service'
-    end
-    service_name = "openvpn@#{node['openvpn']['type']}.service"
-  else
-    service_name = 'openvpn'
-  end
 when 'debian'
   service_name = "openvpn@#{node['openvpn']['type']}.service"
-when 'arch'
-  if node['openvpn']['git_package']
-    link "/etc/openvpn/#{node['openvpn']['type']}/#{node['openvpn']['type']}.conf" do
-      to "/etc/openvpn/#{node['openvpn']['type']}.conf"
-    end
-    service_name = "openvpn-#{node['openvpn']['type']}@#{node['openvpn']['type']}.service"
-  else
-    service_name = "openvpn@#{node['openvpn']['type']}.service"
-  end
 else
   service_name = 'openvpn'
 end

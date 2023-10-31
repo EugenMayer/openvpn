@@ -1,5 +1,5 @@
 #
-# Cookbook:: openvpn
+# Cookbook:: openvpn-easyrsa
 # Resource:: conf
 #
 # Copyright:: 2013-2018, Tacit Knowledge, Inc.
@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :cookbook, String, default: 'openvpn'
+property :cookbook, String, default: 'openvpn-easyrsa'
 property :config, Hash
 property :template_source, String, default: 'server.conf.erb'
 property :push_routes, Array

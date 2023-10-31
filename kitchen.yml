@@ -50,7 +50,7 @@ platforms:
 suites:
   - name: server
     run_list:
-      - recipe[openvpn::server]
+      - recipe[openvpn-easyrsa::server]
     attributes:
       openvpn:
         config:

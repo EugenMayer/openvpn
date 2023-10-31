@@ -1,5 +1,5 @@
 #
-# Cookbook:: openvpn
+# Cookbook:: openvpn-easyrsa
 # Recipe:: install
 #
 # Copyright:: 2014-2018, Xhost Australia
@@ -17,7 +17,7 @@
 # limitations under the License.
 
 include_recipe 'yum-epel' if platform_family?('rhel', 'amazon')
-include_recipe 'openvpn::apt-repo' if platform_family?('debian')
+include_recipe 'openvpn-easyrsa::apt-repo' if platform_family?('debian')
 
 if node['openvpn']['git_package'] == true
   package 'openvpn-git'
