@@ -13,6 +13,7 @@ Forked from sous - BREAKING CHANGES
 - only support easy-rsa 3.0 distros: debian 10+ and ubuntu 20+
 - removed user management
 - removed support for freebsd, arch, macos, windows, rhel and suse
+- Add ovpn-admin support hint and compatibility
 
 BREAKING CHANGES !! BREAKING CHANGES
 This release has a gazzilion breaking changes and you should not upgrade from sous directly.

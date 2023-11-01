@@ -28,6 +28,17 @@ cd /etc/openvpn/easy-rsa
 ./easy-rsa sign-req client client1
 ```
 
+## Ovpn-Admin
+
+The layout deployed by this cookbook and the compliance against easy-rsa offers a sleek integration with https://github.com/flant/ovpn-admin - a GUI to maintain, add and revoke user certificates (and download the client config).
+
+You need to configure this variables to be compatible out of the box
+
+```
+EASYRSA_PATH=/etc/openvpn/easy-rsa/pki
+OVPN_INDEX_PATH=/etc/openvpn/easy-rsa/pki/index.txt
+```
+
 ## Attributes
 
 These attributes are set by the cookbook by default.
