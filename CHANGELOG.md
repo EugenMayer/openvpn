@@ -14,6 +14,7 @@ Forked from sous - BREAKING CHANGES
 - removed user management
 - removed support for freebsd, arch, macos, windows, rhel and suse
 - Add ovpn-admin support hint and compatibility
+- Add support to generate a ta.key / configuration for tls-auth support
 
 BREAKING CHANGES !! BREAKING CHANGES
 This release has a gazzilion breaking changes and you should not upgrade from sous directly.

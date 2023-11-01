@@ -1,20 +1,20 @@
-# openvpn Cookbook
+# openvpn-easyrsa Cookbook
 
 [![ci](https://github.com/EugenMayer/openvpn/actions/workflows/ci.yml/badge.svg)](https://github.com/EugenMayer/openvpn/actions/workflows/ci.yml)
 [![Cookbook Version](https://img.shields.io/cookbook/v/openvpn.svg)](https://supermarket.chef.io/cookbooks/openvpn)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Installs OpenVPN and sets up a fairly basic configuration. Since OpenVPN is very complex, we provide a baseline only (see **Customizing Server Configuration** below).
-Sets up a ca, server, crl using easy-rsa and stays easy-rsa compliant (see below)
+Installs openvpn and easy-rsa and uses the latter to configure the ca, server, dh and all the other bits,
+so you can start the server right away.
 
-## Requirements
+Using easy-rsa you can also add user-certificates fairly easy - `./easy-rsa build-client-full client1`.
 
-### Platforms
+The layout and deployment also offers an integration with the Certificate/User management tool https://github.com/flant/ovpn-admin
 
-- Debian 11+
-- Ubuntu 22.04+
+If you upgrade from the sous-chef `openvpn` cookbook or consider so, read the CHANGELOG.md - we have massive changes
+and you will need to start your pki from scratch - there is no other upgrade path.
 
-## Easy-rsa
+# Easy-rsa
 
 You can use easy-rsa after the deployment to run any renewals or easy-rsa specific commands in
 
@@ -24,11 +24,10 @@ cd /etc/openvpn/easy-rsa
 ./easy-rsa gen-crl
 
 # create a client certificate
-./easy-rsa gen-req client1
-./easy-rsa sign-req client client1
+./easy-rsa build-client-full client1
 ```
 
-## Ovpn-Admin
+# Ovpn-Admin
 
 The layout deployed by this cookbook and the compliance against easy-rsa offers a sleek integration with https://github.com/flant/ovpn-admin - a GUI to maintain, add and revoke user certificates (and download the client config).
 
@@ -39,7 +38,7 @@ EASYRSA_PATH=/etc/openvpn/easy-rsa/pki
 OVPN_INDEX_PATH=/etc/openvpn/easy-rsa/pki/index.txt
 ```
 
-## Attributes
+# Attributes
 
 These attributes are set by the cookbook by default.
 
@@ -82,6 +81,10 @@ revoke certificates
 
 - `node['openvpn']['key']['crl_expire']` - In how many days should the CRL expire? Will be refreshed after half of this time
 
+Configure a shared tls key - will be located at `/etc/openvpn/easy-rsa/pki/ta.key`
+
+- `node['openvpn']['tls']['generate_tls_shared_key']` - set to true to configure a shared tls key (tls-auth)
+
 ## Recipes
 
 ### `openvpn::default`
@@ -94,19 +97,11 @@ Installs the OpenVPN package only.
 
 ### `openvpn::server`
 
-Installs and configures OpenVPN as a server.
-
-### `openvpn::client`
-
-Installs and configures OpenVPN as a client.
+Installs and configures OpenVPN as a server. Installs easy-rsa and configures all needed certificates for the server.
 
 ### `openvpn::service`
 
 Manages the OpenVPN system service (there is no need to use this recipe directly in your run_list).
-
-### `openvpn::easy_rsa`
-
-Installs the easy-rsa package (a CLI utility to build and manage a PKI CA).
 
 ### Usage
 
@@ -172,11 +167,7 @@ push "string-option string value"
 
 This cookbook also provides an 'up' script that runs when OpenVPN is started. This script is for setting up firewall rules and kernel networking parameters as needed for your environment. Modify to suit your needs, upload the cookbook and re-run chef on the openvpn server. For example, you'll probably want to enable IP forwarding (sample Linux setting is commented out). The attribute `node['openvpn']["script_security"]` must be set to 2 or higher to use this otherwise openvpn server startup will fail.
 
-## Resources
-
-### openvpn_user
-
-Implements a resource for creation of users and bundles.
+#S Resources
 
 ### openvpn_config
 
