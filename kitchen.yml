@@ -53,6 +53,8 @@ suites:
       - recipe[openvpn-easyrsa::server]
     attributes:
       openvpn:
+        tls:
+          generate_tls_shared_key: true
         config:
           verb: 1
           mute: 10

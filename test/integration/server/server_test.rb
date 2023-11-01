@@ -32,6 +32,7 @@ describe file("#{conf_location}") do
   its('content') { should include 'push "dhcp-option DOMAIN-SEARCH local"' }
   its('content') { should include 'push "route 192.168.10.0 255.255.255.0"' }
   its('content') { should include 'push "route 10.12.10.0 255.255.255.0"' }
+  its('content') { should include 'tls-auth /etc/openvpn/easy-rsa/pki/ta.key 0' }
 end
 
 describe command('openssl crl -in /etc/openvpn/easy-rsa/pki/crl.pem -noout -issuer') do
@@ -78,3 +79,8 @@ end
 describe file('/etc/openvpn/easy-rsa/pki/private/server.key') do
   it { should be_file }
 end
+
+describe file('/etc/openvpn/easy-rsa/pki/ta.key') do
+  it { should be_file }
+end
+

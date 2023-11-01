@@ -33,13 +33,6 @@ node.override['openvpn']['key']['size'] = node['openvpn']['key']['size'].to_i
 
 key_dir  = node['openvpn']['easyrsa']['key_dir']
 
-directory key_dir do
-  owner 'root'
-  group node['root_group']
-  recursive true
-  mode  '0700'
-end
-
 template '/etc/openvpn/server.up.sh' do
   source 'server.up.sh.erb'
   owner 'root'
@@ -59,6 +52,16 @@ file "#{key_dir}/index.txt" do
   group node['root_group']
   mode  '0600'
   action :create
+end
+
+if node['openvpn']['tls']['generate_tls_shared_key'] == true
+  tls_target_location = node['openvpn']['tls']['path']
+  execute 'generate_ta' do
+    command "openvpn --genkey secret #{tls_target_location}"
+    action :run
+    creates tls_target_location
+  end
+  node.override['openvpn']['config']['tls-auth'] = "#{tls_target_location} 0"
 end
 
 file "#{key_dir}/serial" do

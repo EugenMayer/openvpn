@@ -75,12 +75,13 @@ execute 'easyrsa-crl' do
   not_if { ::File.exist?("#{crl}") }
 end
 
+# TODO: we could use ./easyrsa build-server-full server nopass batch
+#  to create the req and the cert in one go
 execute 'easyrsa-server-csr' do
   cwd "/etc/openvpn/easy-rsa/"
   command './easyrsa gen-req server nopass batch'
   not_if { ::File.exist?("#{server_csr}") }
 end
-
 execute 'easyrsa-server-crt' do
   cwd "/etc/openvpn/easy-rsa/"
   command './easyrsa sign-req server server batch'

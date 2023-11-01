@@ -47,6 +47,9 @@ default['openvpn']['easyrsa']['server_csr'] = "#{node['openvpn']['easyrsa']['key
 default['openvpn']['easyrsa']['server_key'] = "#{node['openvpn']['easyrsa']['key_dir']}/private/server.key"
 default['openvpn']['easyrsa']['server_cert'] = "#{node['openvpn']['easyrsa']['key_dir']}/issued/server.crt"
 
+default['openvpn']['tls']['generate_tls_shared_key']  = false
+default['openvpn']['tls']['path'] = "#{node['openvpn']['easyrsa']['key_dir']}/ta.key"
+
 default['openvpn']['type']            = 'server'
 default['openvpn']['subnet']          = '10.8.0.0'
 default['openvpn']['netmask']         = '255.255.0.0'
@@ -55,6 +58,7 @@ default['openvpn']['netmask']         = '255.255.0.0'
 default['openvpn']['gateway']                   = "vpn.#{node['domain']}"
 default['openvpn']['client_cn']                 = 'client'
 default['openvpn']['server_verification']       = nil
+
 
 # Server specific
 # client 'push routes', attribute is treated as a helper
